@@ -65,7 +65,11 @@ public class UserServiceImpl implements UserService {
 
 			Role role = roleRepo.findById(AppConstants.USER_ID).get();
 			user.getRoles().add(role);
-
+			
+			if (userDTO.getAddress() == null) {
+				System.out.println("userDTO.getAddress() == null");
+			}
+			
 			String country = userDTO.getAddress().getCountry();
 			String state = userDTO.getAddress().getState();
 			String city = userDTO.getAddress().getCity();

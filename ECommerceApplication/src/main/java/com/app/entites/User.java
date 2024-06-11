@@ -36,11 +36,11 @@ public class User {
 	private Long userId;
 
 	@Size(min = 5, max = 20, message = "First Name must be between 5 and 30 characters long")
-	@Pattern(regexp = "^[a-zA-Z]*$", message = "First Name must not contain numbers or special characters")
+//	@Pattern(regexp = "^[a-zA-Z]*$", message = "First Name must not contain numbers or special characters")
 	private String firstName;
 
 	@Size(min = 5, max = 20, message = "Last Name must be between 5 and 30 characters long")
-	@Pattern(regexp = "^[a-zA-Z]*$", message = "Last Name must not contain numbers or special characters")
+//	@Pattern(regexp = "^[a-zA-Z]*$", message = "Last Name must not contain numbers or special characters")
 	private String lastName;
 
 	@Size(min = 10, max = 10, message = "Mobile Number must be exactly 10 digits long")

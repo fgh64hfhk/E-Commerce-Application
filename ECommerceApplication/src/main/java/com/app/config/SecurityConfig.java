@@ -3,8 +3,10 @@ package com.app.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -33,21 +35,21 @@ public class SecurityConfig {
 	private UserDetailsServiceImpl userDetailsServiceImpl;
 	
 	@Bean
-	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-		http
-			.csrf()
-			.disable()
-			.authorizeHttpRequests()
-			.requestMatchers(AppConstants.PUBLIC_URLS).permitAll()
-			.requestMatchers(AppConstants.USER_URLS).hasAnyAuthority("USER", "ADMIN")
-			.requestMatchers(AppConstants.ADMIN_URLS).hasAuthority("ADMIN")
-			.anyRequest()
-			.authenticated()
-			.and()
-			.exceptionHandling().authenticationEntryPoint(
-					(request, response, authException) -> 
-						response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized"))
-			.and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);	
+	SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
+                .cors(Customizer.withDefaults())
+                .csrf(csrf -> csrf
+                        .disable())
+                .authorizeHttpRequests(requests -> requests
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        .requestMatchers(AppConstants.PUBLIC_URLS).permitAll()
+                        .requestMatchers(AppConstants.USER_URLS).hasAnyAuthority("USER", "ADMIN")
+                        .requestMatchers(AppConstants.ADMIN_URLS).hasAuthority("ADMIN")
+                        .anyRequest()
+                        .authenticated())
+                .exceptionHandling(handling -> handling.authenticationEntryPoint(
+                        (request, response, authException) ->
+                                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized"))).sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS));	
 		
 		http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 		
@@ -58,8 +60,8 @@ public class SecurityConfig {
 		return defaultSecurityFilterChain;
 	}
 
-	@Bean
-	public DaoAuthenticationProvider daoAuthenticationProvider() {
+    @Bean
+    DaoAuthenticationProvider daoAuthenticationProvider() {
 		DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
 		
 		provider.setUserDetailsService(userDetailsServiceImpl);
@@ -69,12 +71,12 @@ public class SecurityConfig {
 	}
 
 	@Bean
-	public PasswordEncoder passwordEncoder() {
+	PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
 
 	@Bean
-	public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
+	AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
 		return configuration.getAuthenticationManager();
 	}
 }
