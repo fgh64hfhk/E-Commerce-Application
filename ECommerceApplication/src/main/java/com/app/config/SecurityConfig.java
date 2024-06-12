@@ -27,46 +27,52 @@ import jakarta.servlet.http.HttpServletResponse;
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
-	
+
 	@Autowired
 	private JWTFilter jwtFilter;
-	
+
 	@Autowired
 	private UserDetailsServiceImpl userDetailsServiceImpl;
-	
+
 	@Bean
 	SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-                .cors(Customizer.withDefaults())
-                .csrf(csrf -> csrf
-                        .disable())
-                .authorizeHttpRequests(requests -> requests
-                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .requestMatchers(AppConstants.PUBLIC_URLS).permitAll()
-                        .requestMatchers(AppConstants.USER_URLS).hasAnyAuthority("USER", "ADMIN")
-                        .requestMatchers(AppConstants.ADMIN_URLS).hasAuthority("ADMIN")
-                        .anyRequest()
-                        .authenticated())
-                .exceptionHandling(handling -> handling.authenticationEntryPoint(
-                        (request, response, authException) ->
-                                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized"))).sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS));	
-		
+		http
+			.cors(Customizer.withDefaults())
+			.csrf(csrf -> csrf.disable())
+			.authorizeHttpRequests(requests -> 
+						requests.requestMatchers(AppConstants.PUBLIC_URLS).permitAll()
+								.requestMatchers(AppConstants.USER_URLS).hasAnyAuthority("USER", "ADMIN")
+								.requestMatchers(AppConstants.ADMIN_URLS).hasAuthority("ADMIN")
+								.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+								.anyRequest()
+								.authenticated()
+						)
+			.exceptionHandling(handling -> 
+						handling.authenticationEntryPoint(
+								(request, response, authException) -> 
+									response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized")
+								)
+						)
+			.sessionManagement(management -> 
+						management.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+						);
+
 		http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
-		
+
 		http.authenticationProvider(daoAuthenticationProvider());
-		
+
 		DefaultSecurityFilterChain defaultSecurityFilterChain = http.build();
-		
+
 		return defaultSecurityFilterChain;
 	}
 
-    @Bean
-    DaoAuthenticationProvider daoAuthenticationProvider() {
+	@Bean
+	DaoAuthenticationProvider daoAuthenticationProvider() {
 		DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-		
+
 		provider.setUserDetailsService(userDetailsServiceImpl);
 		provider.setPasswordEncoder(passwordEncoder());
-		
+
 		return provider;
 	}
 
