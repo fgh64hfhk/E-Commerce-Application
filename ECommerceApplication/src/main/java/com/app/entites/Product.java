@@ -37,7 +37,7 @@ public class Product {
 	private String image;
 
 	@NotBlank
-	@Size(min = 6, message = "Product description must contain atleast 6 characters")
+//	@Size(min = 3, message = "Product description must contain atleast 6 characters")
 	private String description;
 
 	private Integer quantity;
@@ -49,10 +49,20 @@ public class Product {
 	@JoinColumn(name = "category_id")
 	private Category category;
 
+	@OneToMany(mappedBy = "product", cascade = { CascadeType.ALL }, fetch = FetchType.EAGER)
+	private List<ProductVariant> variants = new ArrayList<>();
+
 	@OneToMany(mappedBy = "product", cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.EAGER)
 	private List<CartItem> products = new ArrayList<>();
 
 	@OneToMany(mappedBy = "product", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 	private List<OrderItem> orderItems = new ArrayList<>();
+
+	@Override
+	public String toString() {
+		return "Product [productId=" + productId + ", productName=" + productName + ", image=" + image
+				+ ", description=" + description + ", quantity=" + quantity + ", price=" + price + ", discount="
+				+ discount + ", specialPrice=" + specialPrice + "]";
+	}
 
 }

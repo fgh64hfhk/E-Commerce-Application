@@ -16,4 +16,8 @@ public class AppConstants {
 	public static final String[] USER_URLS = { "/api/public/**" };
 	public static final String[] ADMIN_URLS = { "/api/admin/**" };
 	
+	// 產品預設常數
+	public static final Long HELMET_ID = 201L;
+	public static final Long PROTECTIVE_GEAR_ID = 202L;
+	public static final Long PROTECTIVE_GLOVES_ID = 203L;
 }
