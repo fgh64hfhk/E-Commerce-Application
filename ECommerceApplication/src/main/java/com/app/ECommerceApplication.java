@@ -217,6 +217,8 @@ public class ECommerceApplication implements CommandLineRunner {
 				// 新增產品變體到陣列
 				productVariants.add(productVariant);
 			}
+			// 設置產品預設的庫存數量
+			product.setQuantity(0);
 
 			// 設置產品變體陣列到產品物件
 			product.setVariants(productVariants);

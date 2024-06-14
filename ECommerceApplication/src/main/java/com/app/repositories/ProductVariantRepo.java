@@ -4,6 +4,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.app.entites.ProductVariant;
 
-public interface ProductVariantRepo extends JpaRepository<ProductVariant, Long>{
+public interface ProductVariantRepo extends JpaRepository<ProductVariant, Long> {
 
 }

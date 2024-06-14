@@ -1,5 +1,7 @@
 package com.app.payloads;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,4 +20,5 @@ public class ProductDTO {
 	private double discount;
 	private double specialPrice;
 
+	private List<ProductVariantDTO> variantDTOs;
 }

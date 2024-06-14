@@ -1,6 +1,7 @@
 package com.app.controllers;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,7 +22,10 @@ import com.app.config.AppConstants;
 import com.app.entites.Product;
 import com.app.payloads.ProductDTO;
 import com.app.payloads.ProductResponse;
+import com.app.payloads.ProductVariantDTO;
+import com.app.payloads.ProductVariantResponse;
 import com.app.services.ProductService;
+import com.app.services.ProductVariantService;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
@@ -34,6 +38,9 @@ public class ProductController {
 
 	@Autowired
 	private ProductService productService;
+
+	@Autowired
+	private ProductVariantService variantService;
 
 	@PostMapping("/admin/categories/{categoryId}/product")
 	public ResponseEntity<ProductDTO> addProduct(@Valid @RequestBody Product product, @PathVariable Long categoryId) {
@@ -51,6 +58,17 @@ public class ProductController {
 			@RequestParam(name = "sortOrder", defaultValue = AppConstants.SORT_DIR, required = false) String sortOrder) {
 
 		ProductResponse productResponse = productService.getAllProducts(pageNumber, pageSize, sortBy, sortOrder);
+		
+		List<ProductDTO> productDTOs = productResponse.getContent();
+		
+		String variant_sortBy = AppConstants.SORT_VARIANT_BY;
+		productDTOs.forEach(productDto -> {
+			List<ProductVariantDTO> variantDTOs = variantService.getAllProductVariantsById(productDto.getProductId(), pageNumber,
+					pageSize, variant_sortBy, sortOrder);
+			productDto.setVariantDTOs(variantDTOs);
+		});
+		
+		productResponse.setContent(productDTOs);
 
 		return new ResponseEntity<ProductResponse>(productResponse, HttpStatus.FOUND);
 	}
@@ -67,7 +85,7 @@ public class ProductController {
 
 		return new ResponseEntity<ProductResponse>(productResponse, HttpStatus.FOUND);
 	}
-	
+
 	@GetMapping("/public/products/keyword/{keyword}")
 	public ResponseEntity<ProductResponse> getProductsByKeyword(@PathVariable String keyword,
 			@RequestParam(name = "pageNumber", defaultValue = AppConstants.PAGE_NUMBER, required = false) Integer pageNumber,
@@ -82,15 +100,15 @@ public class ProductController {
 	}
 
 	@PutMapping("/admin/products/{productId}")
-	public ResponseEntity<ProductDTO> updateProduct(@RequestBody Product product,
-			@PathVariable Long productId) {
+	public ResponseEntity<ProductDTO> updateProduct(@RequestBody Product product, @PathVariable Long productId) {
 		ProductDTO updatedProduct = productService.updateProduct(productId, product);
 
 		return new ResponseEntity<ProductDTO>(updatedProduct, HttpStatus.OK);
 	}
-	
+
 	@PutMapping("/admin/products/{productId}/image")
-	public ResponseEntity<ProductDTO> updateProductImage(@PathVariable Long productId, @RequestParam("image") MultipartFile image) throws IOException {
+	public ResponseEntity<ProductDTO> updateProductImage(@PathVariable Long productId,
+			@RequestParam("image") MultipartFile image) throws IOException {
 		ProductDTO updatedProduct = productService.updateProductImage(productId, image);
 
 		return new ResponseEntity<ProductDTO>(updatedProduct, HttpStatus.OK);
