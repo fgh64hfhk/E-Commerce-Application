@@ -4,8 +4,6 @@ import java.util.List;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
-//import jakarta.persistence.GeneratedValue;
-//import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -17,20 +15,18 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Data
-@Table(name = "categories")
+@Table(name = "categories_coupon")
 @NoArgsConstructor
 @AllArgsConstructor
-public class Category {
+public class CategoryCoupon {
 
 	@Id
-//	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long categoryId;
-
+	
 	@NotBlank
-	@Size(min = 3, message = "Category name must contain atleast 3 characters")
+	@Size(min = 1, message = "Category name must contain atleast 1 characters")
 	private String categoryName;
-
-	@OneToMany(mappedBy = "category", cascade = CascadeType.ALL )
-	private List<Product> products;
-
+	
+	@OneToMany(mappedBy = "categoryCoupon", cascade = CascadeType.ALL)
+	private List<Coupon> coupons;
 }

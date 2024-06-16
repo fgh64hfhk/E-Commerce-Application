@@ -1,6 +1,7 @@
 package com.app.controllers;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,17 +59,6 @@ public class ProductController {
 			@RequestParam(name = "sortOrder", defaultValue = AppConstants.SORT_DIR, required = false) String sortOrder) {
 
 		ProductResponse productResponse = productService.getAllProducts(pageNumber, pageSize, sortBy, sortOrder);
-		
-		List<ProductDTO> productDTOs = productResponse.getContent();
-		
-		String variant_sortBy = AppConstants.SORT_VARIANT_BY;
-		productDTOs.forEach(productDto -> {
-			List<ProductVariantDTO> variantDTOs = variantService.getAllProductVariantsById(productDto.getProductId(), pageNumber,
-					pageSize, variant_sortBy, sortOrder);
-			productDto.setVariantDTOs(variantDTOs);
-		});
-		
-		productResponse.setContent(productDTOs);
 
 		return new ResponseEntity<ProductResponse>(productResponse, HttpStatus.FOUND);
 	}

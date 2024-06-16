@@ -11,6 +11,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -29,7 +30,7 @@ public class Order {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long orderId;
-	
+
 	@Email
 	@Column(nullable = false)
 	private String email;
@@ -38,11 +39,17 @@ public class Order {
 	private List<OrderItem> orderItems = new ArrayList<>();
 
 	private LocalDate orderDate;
-	
+
 	@OneToOne
 	@JoinColumn(name = "payment_id")
 	private Payment payment;
-	
+
 	private Double totalAmount;
-	private String orderStatus;
+
+	@Column(nullable = false)
+	private String orderStatus; // "PENDING", "COMPLETED", "CANCELLED"
+
+	@ManyToOne
+	@JoinColumn(name = "coupon_id", nullable = true)
+	private Coupon coupon;
 }

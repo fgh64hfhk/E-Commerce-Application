@@ -10,6 +10,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -41,7 +42,7 @@ public class Product {
 	private String description;
 
 	private Integer quantity;
-	private double price;
+	private double productPrice;
 	private double discount;
 	private double specialPrice;
 
@@ -58,10 +59,13 @@ public class Product {
 	@OneToMany(mappedBy = "product", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 	private List<OrderItem> orderItems = new ArrayList<>();
 
+	@ManyToMany(mappedBy = "applicableProducts")
+	private List<Coupon> coupons;
+
 	@Override
 	public String toString() {
 		return "Product [productId=" + productId + ", productName=" + productName + ", image=" + image
-				+ ", description=" + description + ", quantity=" + quantity + ", price=" + price + ", discount="
+				+ ", description=" + description + ", quantity=" + quantity + ", price=" + productPrice + ", discount="
 				+ discount + ", specialPrice=" + specialPrice + "]";
 	}
 

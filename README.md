@@ -65,6 +65,6 @@
 <img width="947" alt="Order_Controller" src="https://user-images.githubusercontent.com/101395494/216388971-7d654a8e-6abc-4548-80c6-8d1173f56bc4.png">
 
 # License
-Copyright ©2023, Jon Schlinkert.
+Copyright ©2023, Shaik Sirajuddin.
 
 # Thank You

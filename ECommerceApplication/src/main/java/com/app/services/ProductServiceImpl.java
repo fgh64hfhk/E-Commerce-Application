@@ -77,7 +77,7 @@ public class ProductServiceImpl implements ProductService {
 
 			product.setCategory(category);
 
-			double specialPrice = product.getPrice() - ((product.getDiscount() * 0.01) * product.getPrice());
+			double specialPrice = product.getProductPrice() - ((product.getDiscount() * 0.01) * product.getProductPrice());
 			product.setSpecialPrice(specialPrice);
 
 			Product savedProduct = productRepo.save(product);
@@ -194,7 +194,7 @@ public class ProductServiceImpl implements ProductService {
 		product.setProductId(productId);
 		product.setCategory(productFromDB.getCategory());
 
-		double specialPrice = product.getPrice() - ((product.getDiscount() * 0.01) * product.getPrice());
+		double specialPrice = product.getProductPrice() - ((product.getDiscount() * 0.01) * product.getProductPrice());
 		product.setSpecialPrice(specialPrice);
 
 		Product savedProduct = productRepo.save(product);
