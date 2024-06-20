@@ -1,9 +1,12 @@
 package com.app.entites;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -34,17 +37,26 @@ public class Product {
 	@NotBlank
 	@Size(min = 3, message = "Product name must contain atleast 3 characters")
 	private String productName;
+	
+	@NotBlank
+	private String productBrand;
 
 	private String image;
 
 	@NotBlank
-//	@Size(min = 3, message = "Product description must contain atleast 6 characters")
+	@Size(min = 3, message = "Product description must contain atleast 3 characters")
 	private String description;
 
 	private Integer quantity;
-	private double productPrice;
+
+	@Column
+	private double productPrice; // 商品成本
+
+	@Column
 	private double discount;
-	private double specialPrice;
+
+	@Column
+	private double specialPrice; // 商品定價
 
 	@ManyToOne
 	@JoinColumn(name = "category_id")
@@ -58,6 +70,9 @@ public class Product {
 
 	@OneToMany(mappedBy = "product", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 	private List<OrderItem> orderItems = new ArrayList<>();
+
+	@OneToMany(mappedBy = "product", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	private Set<PurchaseItem> purchaseItems = new LinkedHashSet<>();
 
 	@ManyToMany(mappedBy = "applicableProducts")
 	private List<Coupon> coupons;

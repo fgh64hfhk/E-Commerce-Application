@@ -60,7 +60,9 @@ public class Coupon {
 	@JoinColumn(name = "category_id")
 	private CategoryCoupon categoryCoupon;
 
-//	private List<Category> applicableCategory;
+	@ManyToMany
+	@JoinTable(name = "coupon_category", joinColumns = @JoinColumn(name = "coupon_id"), inverseJoinColumns = @JoinColumn(name = "category_id"))
+	private List<Product> applicableCategories;
 
 	@ManyToMany
 	@JoinTable(name = "coupon_product", joinColumns = @JoinColumn(name = "coupon_id"), inverseJoinColumns = @JoinColumn(name = "product_id"))

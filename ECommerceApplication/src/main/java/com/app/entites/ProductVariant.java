@@ -1,12 +1,16 @@
 package com.app.entites;
 
+import java.util.List;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
 //import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -22,13 +26,13 @@ public class ProductVariant {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long variantId;
+	private Long productVariantId;
 
-//	@NotBlank
+	@NotBlank
 	@Size(max = 15, message = "color name must contain no more than 15 characters")
 	private String color;
 
-//	@NotBlank
+	@NotBlank
 	@Size(max = 15, message = "size name must contain no more than 15 characters")
 	private String size;
 
@@ -39,4 +43,7 @@ public class ProductVariant {
 	@ManyToOne
 	@JoinColumn(name = "product_id")
 	private Product product;
+	
+	@ManyToMany(mappedBy = "productVariants")
+	private List<CartItem> cartItem;
 }

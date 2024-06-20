@@ -2,20 +2,27 @@ package com.app.services;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.app.entites.CategoryCoupon;
 import com.app.entites.Coupon;
 import com.app.entites.Order;
+import com.app.entites.Product;
 import com.app.exceptions.APIException;
 import com.app.exceptions.ResourceNotFoundException;
 import com.app.payloads.CouponDTO;
 import com.app.payloads.CouponResponse;
+import com.app.payloads.ProductDTO;
 import com.app.repositories.CartRepo;
 import com.app.repositories.CategoryCouponRepo;
 import com.app.repositories.CouponRepo;
@@ -80,13 +87,44 @@ public class CouponServiceImpl implements CouponService {
 
 	@Override
 	public CouponResponse getAllCoupons(Integer pageNumber, Integer pageSize, String sortBy, String sortOrder) {
-		// TODO Auto-generated method stub
-		return null;
+		Sort sortByAndOrder = sortOrder.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending()
+				: Sort.by(sortBy).descending();
+		Pageable pageDetails = PageRequest.of(pageNumber, pageSize, sortByAndOrder);
+		Page<Coupon> pageCoupons = couponRepo.findAll(pageDetails);
+		List<Coupon> coupons = pageCoupons.getContent();
+		List<CouponDTO> couponDTOs = coupons.stream().map(coupon -> modelMapper.map(coupon, CouponDTO.class))
+				.collect(Collectors.toList());
+		CouponResponse couponResponse = new CouponResponse();
+		couponResponse.setContent(couponDTOs);
+		couponResponse.setPageNumber(pageCoupons.getNumber());
+		couponResponse.setPageSize(pageCoupons.getSize());
+		couponResponse.setTotalElements(pageCoupons.getTotalElements());
+		couponResponse.setTotalPages(pageCoupons.getTotalPages());
+		couponResponse.setLastPage(pageCoupons.isLast());
+		return couponResponse;
 	}
 
 	@Override
 	public CouponDTO updateCoupon(Long couponId, Coupon coupon) {
-		// TODO Auto-generated method stub
+		Coupon couponFromDB = couponRepo.findById(couponId)
+				.orElseThrow(() -> new ResourceNotFoundException("Coupon", "couponId", couponId));
+		if (couponFromDB == null) {
+			throw new APIException("Coupon not found with couponId: " + couponId);
+		}
+		coupon.setImage(couponFromDB.getImage());
+		coupon.setCouponId(couponFromDB.getCouponId());
+		coupon.setCategoryCoupon(couponFromDB.getCategoryCoupon());
+		coupon.setCode(couponFromDB.getCode());
+		coupon.setStartDate(couponFromDB.getStartDate());
+
+		Coupon savedCoupon = couponRepo.save(coupon);
+
+		List<Product> products = productRepo.findProductsByCouponId(couponId);
+
+		List<ProductDTO> productDTOs = products.stream().map(product -> {
+			ProductDTO productDTO = modelMapper.map(product, ProductDTO.class);
+			return productDTO;
+		}).collect(Collectors.toList());
 		return null;
 	}
 

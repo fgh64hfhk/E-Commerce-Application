@@ -1,8 +1,6 @@
 package com.app.controllers;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,10 +21,7 @@ import com.app.config.AppConstants;
 import com.app.entites.Product;
 import com.app.payloads.ProductDTO;
 import com.app.payloads.ProductResponse;
-import com.app.payloads.ProductVariantDTO;
-import com.app.payloads.ProductVariantResponse;
 import com.app.services.ProductService;
-import com.app.services.ProductVariantService;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
@@ -39,9 +34,6 @@ public class ProductController {
 
 	@Autowired
 	private ProductService productService;
-
-	@Autowired
-	private ProductVariantService variantService;
 
 	@PostMapping("/admin/categories/{categoryId}/product")
 	public ResponseEntity<ProductDTO> addProduct(@Valid @RequestBody Product product, @PathVariable Long categoryId) {

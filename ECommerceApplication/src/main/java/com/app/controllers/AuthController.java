@@ -43,7 +43,8 @@ public class AuthController {
 	private PasswordEncoder passwordEncoder;
 
 	@PostMapping("/register")
-	public ResponseEntity<Map<String, Object>> registerHandler(@Valid @RequestBody UserDTO user) throws UserNotFoundException {
+	public ResponseEntity<Map<String, Object>> registerHandler(@Valid @RequestBody UserDTO user)
+			throws UserNotFoundException {
 		String encodedPass = passwordEncoder.encode(user.getPassword());
 
 		user.setPassword(encodedPass);

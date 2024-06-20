@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta charset="UTF-8">
+		<title>PSI-Supplier</title>
+		<link rel="stylesheet"
+			  href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+	</head>
+	<body>
+		<div class="container my-2">
+			<!-- Header -->
+			<div th:include="header :: header"></div>
+			
+			<!-- Content -->
+			<h1>新增供應商</h1>
+			<form th:action="@{/supplier/}" th:object="${supplier}" method="post">
+				<div class="form-group">
+					<label>供應商名稱:</label>
+					<input type="text" 
+						   th:field="*{name}" 
+						   id="name" 
+						   class="form-control"
+						   placeholder="請輸入供應商名稱" />
+				</div>
+				<input type="submit" value="新增供應商" class="btn btn-primary" />
+			</form>
+			
+			<h1>列出全部供應商</h1>
+			<table border="1" class="table table-striped table-reposive-md">
+				<thead>
+					<tr>
+						<th>序號</th>
+						<th>供應商名稱</th>
+						<th>商品集合</th>
+						<th>修改</th>
+						<th>刪除</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="supplier : ${suppliers}">
+						<td th:text="${supplier.id}"></td>
+						<td th:text="${supplier.name}"></td>
+						<td>
+							...
+						</td>
+						<td>
+							<a th:href="@{/supplier/edit/{id}(id=${supplier.id})}" 
+							   class="btn btn-primary">
+								編輯
+							</a>
+						</td>
+						<td>
+							<a th:href="@{/supplier/delete/{id}(id=${supplier.id})}"
+							   th:if="${supplier.purchases.size == 0}"		 
+							   class="btn btn-danger">
+								刪除
+							</a>
+							
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			
+			<!-- Footer -->
+			<div th:include="footer :: footer"></div>
+		</div>
+	</body>
+</html>

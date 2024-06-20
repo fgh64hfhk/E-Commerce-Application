@@ -203,6 +203,7 @@ public class ECommerceApplication implements CommandLineRunner {
 			// 存放產品變體的陣列
 			List<ProductVariant> productVariants = new ArrayList<ProductVariant>();
 
+			int q = 0;
 			for (int j = 0; j < variants.length(); j++) {
 
 				// 獲取當前的JSON對象
@@ -210,15 +211,16 @@ public class ECommerceApplication implements CommandLineRunner {
 
 				// 轉換JSON物件為產品變體物件
 				ProductVariant productVariant = gson2.fromJson(variant.toString(), ProductVariant.class);
-				productVariant.setVariantId(auto_increment);
+				productVariant.setProductVariantId(auto_increment);
 				auto_increment++;
 //				System.out.println("productVariant: " + productVariant);
 
+				q += productVariant.getInventory();
 				// 新增產品變體到陣列
 				productVariants.add(productVariant);
 			}
 			// 設置產品預設的庫存數量
-			product.setQuantity(0);
+			product.setQuantity(q);
 
 			// 設置產品變體陣列到產品物件
 			product.setVariants(productVariants);

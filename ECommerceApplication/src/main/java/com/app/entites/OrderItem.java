@@ -1,5 +1,6 @@
 package com.app.entites;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -30,7 +31,9 @@ public class OrderItem {
 	@JoinColumn(name = "order_id")
 	private Order order;
 	
+	@Column
 	private Integer quantity;
+	
 	private double discount;
 	private double orderedProductPrice;
 	
