@@ -16,12 +16,14 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.app.entites.CartItem;
 import com.app.entites.Product;
 import com.app.entites.ProductVariant;
 import com.app.exceptions.APIException;
 import com.app.exceptions.ResourceNotFoundException;
 import com.app.payloads.ProductVariantDTO;
 import com.app.payloads.ProductVariantResponse;
+import com.app.repositories.CartItemRepo;
 import com.app.repositories.ProductRepo;
 import com.app.repositories.ProductVariantRepo;
 
@@ -37,6 +39,9 @@ public class ProductVariantServiceImpl implements ProductVariantService {
 	@Autowired
 	private ProductVariantRepo variantRepo;
 
+	@Autowired
+	private CartItemRepo cartItemRepo;
+	
 	@Autowired
 	private FileService fileService;
 
@@ -131,19 +136,28 @@ public class ProductVariantServiceImpl implements ProductVariantService {
 			throw new APIException("ProductVariant already exists");
 		}
 	}
+	
+	public ProductVariant getProductVariantBySku(Long productId, String sku) {
+		ProductVariant variant = variantRepo.findByProductIdAndProductVariantSKU(productId, sku);
+		return variant;
+	}
 
 	@Override
 	public ProductVariantResponse getAllProductVariantsById(Long productId, Integer pageNumber, Integer pageSize,
 			String sortBy, String sortOrder) {
 
-		Sort sortByAndOrder = sortOrder.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending()
-				: Sort.by(sortBy).descending();
-		Pageable pageDetails = PageRequest.of(pageNumber, pageSize, sortByAndOrder);
-		Page<ProductVariant> pageProductVariants = variantRepo.findAll(pageDetails);
+		// Determine sorting order
+		Sort.Direction sortDirection = sortOrder.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
 
-		List<ProductVariant> variants = pageProductVariants.getContent();
+		// Create Pageable object for pagination and sorting
+		Pageable pageDetails = PageRequest.of(pageNumber, pageSize, sortDirection, sortBy);
+		
+		// Retrieve paginated data from repository
+		Page<ProductVariant> pageProductVariants = variantRepo.findProductVariantsByProductId(productId, pageDetails);
 
-		List<ProductVariantDTO> variantDTOs = variants.stream()
+		// 篩選出符合商品編號的
+
+		List<ProductVariantDTO> variantDTOs = pageProductVariants.stream()
 				.map(variant -> modelMapper.map(variant, ProductVariantDTO.class)).collect(Collectors.toList());
 
 		ProductVariantResponse variantResponse = new ProductVariantResponse();
@@ -195,6 +209,10 @@ public class ProductVariantServiceImpl implements ProductVariantService {
 		}
 		productFromDB.setVariants(list);
 		productRepo.save(productFromDB);
+		
+		// 更新購物車的內容
+		List<CartItem> findCartItemsBySku = cartItemRepo.findCartItemsBySku(variant.getSku());
+		System.out.println(findCartItemsBySku);
 
 		return modelMapper.map(savedProductVariant, ProductVariantDTO.class);
 	}

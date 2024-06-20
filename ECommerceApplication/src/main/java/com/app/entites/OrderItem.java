@@ -24,8 +24,8 @@ public class OrderItem {
 	private Long orderItemId;
 	
 	@ManyToOne
-	@JoinColumn(name = "product_id")
-	private Product product;
+	@JoinColumn(name = "productVariant_id")
+	private ProductVariant productVariant;
 	
 	@ManyToOne
 	@JoinColumn(name = "order_id")

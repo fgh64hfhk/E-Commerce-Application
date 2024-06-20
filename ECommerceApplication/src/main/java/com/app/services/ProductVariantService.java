@@ -18,6 +18,8 @@ public interface ProductVariantService {
 	ProductVariantResponse getAllProductVariantsById(Long productId, Integer pageNumber, Integer pageSize,
 			String sortBy, String sortOrder);
 
+	ProductVariant getProductVariantBySku(Long productId, String sku);
+
 	ProductVariantDTO updateProductVariant(Long productId, ProductVariant variant);
 
 	ProductVariantDTO updateProductImage(Long productId, String color, MultipartFile image) throws IOException;

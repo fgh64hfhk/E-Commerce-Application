@@ -115,7 +115,7 @@ public class ECommerceApplication implements CommandLineRunner {
 
 			// 獲取當前的JSON對象
 			JSONObject object = root.getJSONObject(i);
-			System.out.println("object: " + object);
+//			System.out.println("object: " + object);
 
 			// 解析地址
 			List<Address> addresses = new ArrayList<>();
@@ -124,7 +124,7 @@ public class ECommerceApplication implements CommandLineRunner {
 
 			// 設置密碼
 			String pwd = object.getString("password");
-			System.out.println("password: " + pwd);
+//			System.out.println("password: " + pwd);
 
 			// 創建購物車對象
 			Cart cart = new Cart();
@@ -135,7 +135,7 @@ public class ECommerceApplication implements CommandLineRunner {
 			user.setPassword(passwordEncoder.encode(pwd));
 			user.setCart(cart);
 
-			System.out.println("user: " + user);
+//			System.out.println("user: " + user);
 
 			cart.setUser(user);
 

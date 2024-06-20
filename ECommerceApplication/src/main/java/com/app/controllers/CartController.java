@@ -28,13 +28,13 @@ public class CartController {
 	@Autowired
 	private CartService cartService;
 
-	@PostMapping("/public/carts/{cartId}/products/{productId}/quantity/{quantity}")
-	public ResponseEntity<CartDTO> addProductToCart(@PathVariable Long cartId, @PathVariable Long productId,
-			@PathVariable Integer quantity) {
-		CartDTO cartDTO = cartService.addProductToCart(cartId, productId, quantity);
-
-		return new ResponseEntity<CartDTO>(cartDTO, HttpStatus.CREATED);
-	}
+//	@PostMapping("/public/carts/{cartId}/products/{productId}/quantity/{quantity}")
+//	public ResponseEntity<CartDTO> addProductToCart(@PathVariable Long cartId, @PathVariable Long productId,
+//			@PathVariable Integer quantity) {
+//		CartDTO cartDTO = cartService.addProductToCart(cartId, productId, quantity);
+//
+//		return new ResponseEntity<CartDTO>(cartDTO, HttpStatus.CREATED);
+//	}
 
 	@GetMapping("/admin/carts")
 	public ResponseEntity<List<CartDTO>> getCarts() {
@@ -51,18 +51,18 @@ public class CartController {
 		return new ResponseEntity<CartDTO>(cartDTO, HttpStatus.FOUND);
 	}
 
-	@PutMapping("/public/carts/{cartId}/products/{productId}/quantity/{quantity}")
-	public ResponseEntity<CartDTO> updateCartProduct(@PathVariable Long cartId, @PathVariable Long productId,
-			@PathVariable Integer quantity) {
-		CartDTO cartDTO = cartService.updateProductQuantityInCart(cartId, productId, quantity);
-
-		return new ResponseEntity<CartDTO>(cartDTO, HttpStatus.OK);
-	}
-
-	@DeleteMapping("/public/carts/{cartId}/product/{productId}")
-	public ResponseEntity<String> deleteProductFromCart(@PathVariable Long cartId, @PathVariable Long productId) {
-		String status = cartService.deleteProductFromCart(cartId, productId);
-
-		return new ResponseEntity<String>(status, HttpStatus.OK);
-	}
+//	@PutMapping("/public/carts/{cartId}/products/{productId}/quantity/{quantity}")
+//	public ResponseEntity<CartDTO> updateCartProduct(@PathVariable Long cartId, @PathVariable Long productId,
+//			@PathVariable Integer quantity) {
+//		CartDTO cartDTO = cartService.updateProductQuantityInCart(cartId, productId, quantity);
+//
+//		return new ResponseEntity<CartDTO>(cartDTO, HttpStatus.OK);
+//	}
+//
+//	@DeleteMapping("/public/carts/{cartId}/product/{productId}")
+//	public ResponseEntity<String> deleteProductFromCart(@PathVariable Long cartId, @PathVariable Long productId) {
+//		String status = cartService.deleteProductFromCart(cartId, productId);
+//
+//		return new ResponseEntity<String>(status, HttpStatus.OK);
+//	}
 }

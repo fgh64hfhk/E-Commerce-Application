@@ -37,7 +37,11 @@ public class Product {
 	@NotBlank
 	@Size(min = 3, message = "Product name must contain atleast 3 characters")
 	private String productName;
-	
+
+	@NotBlank
+	@Size(min = 1, message = "Product subcategory must contain atleast 1 characters")
+	private String productCategory;
+
 	@NotBlank
 	private String productBrand;
 
@@ -64,12 +68,6 @@ public class Product {
 
 	@OneToMany(mappedBy = "product", cascade = { CascadeType.ALL }, fetch = FetchType.EAGER)
 	private List<ProductVariant> variants = new ArrayList<>();
-
-	@OneToMany(mappedBy = "product", cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.EAGER)
-	private List<CartItem> products = new ArrayList<>();
-
-	@OneToMany(mappedBy = "product", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
-	private List<OrderItem> orderItems = new ArrayList<>();
 
 	@OneToMany(mappedBy = "product", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 	private Set<PurchaseItem> purchaseItems = new LinkedHashSet<>();

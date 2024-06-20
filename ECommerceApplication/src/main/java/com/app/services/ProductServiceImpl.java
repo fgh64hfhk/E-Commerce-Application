@@ -22,6 +22,7 @@ import com.app.exceptions.ResourceNotFoundException;
 import com.app.payloads.CartDTO;
 import com.app.payloads.ProductDTO;
 import com.app.payloads.ProductResponse;
+import com.app.payloads.ProductVariantDTO;
 import com.app.repositories.CartRepo;
 import com.app.repositories.CategoryRepo;
 import com.app.repositories.ProductRepo;
@@ -183,72 +184,90 @@ public class ProductServiceImpl implements ProductService {
 
 	@Override
 	public ProductDTO updateProduct(Long productId, Product product) {
-		Product productFromDB = productRepo.findById(productId)
-				.orElseThrow(() -> new ResourceNotFoundException("Product", "productId", productId));
-
-		if (productFromDB == null) {
-			throw new APIException("Product not found with productId: " + productId);
-		}
-
-		product.setImage(productFromDB.getImage());
-		product.setProductId(productId);
-		product.setCategory(productFromDB.getCategory());
-
-		double specialPrice = product.getProductPrice() - ((product.getDiscount() * 0.01) * product.getProductPrice());
-		product.setSpecialPrice(specialPrice);
-
-		Product savedProduct = productRepo.save(product);
-
-		List<Cart> carts = cartRepo.findCartsByProductId(productId);
-
-		List<CartDTO> cartDTOs = carts.stream().map(cart -> {
-			CartDTO cartDTO = modelMapper.map(cart, CartDTO.class);
-
-			List<ProductDTO> products = cart.getCartItems().stream()
-					.map(p -> modelMapper.map(p.getProduct(), ProductDTO.class)).collect(Collectors.toList());
-
-			cartDTO.setProducts(products);
-
-			return cartDTO;
-
-		}).collect(Collectors.toList());
-
-		cartDTOs.forEach(cart -> cartService.updateProductInCarts(cart.getCartId(), productId));
-
-		return modelMapper.map(savedProduct, ProductDTO.class);
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
 	public ProductDTO updateProductImage(Long productId, MultipartFile image) throws IOException {
-		Product productFromDB = productRepo.findById(productId)
-				.orElseThrow(() -> new ResourceNotFoundException("Product", "productId", productId));
-
-		if (productFromDB == null) {
-			throw new APIException("Product not found with productId: " + productId);
-		}
-
-		String fileName = fileService.uploadImage(path, image);
-
-		productFromDB.setImage(fileName);
-
-		Product updatedProduct = productRepo.save(productFromDB);
-
-		return modelMapper.map(updatedProduct, ProductDTO.class);
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
 	public String deleteProduct(Long productId) {
-
-		Product product = productRepo.findById(productId)
-				.orElseThrow(() -> new ResourceNotFoundException("Product", "productId", productId));
-
-		List<Cart> carts = cartRepo.findCartsByProductId(productId);
-
-		carts.forEach(cart -> cartService.deleteProductFromCart(cart.getCartId(), productId));
-
-		productRepo.delete(product);
-
-		return "Product with productId: " + productId + " deleted successfully !!!";
+		// TODO Auto-generated method stub
+		return null;
 	}
+
+//	@Override
+//	public ProductDTO updateProduct(Long productId, Product product) {
+//		Product productFromDB = productRepo.findById(productId)
+//				.orElseThrow(() -> new ResourceNotFoundException("Product", "productId", productId));
+//
+//		if (productFromDB == null) {
+//			throw new APIException("Product not found with productId: " + productId);
+//		}
+//
+//		product.setImage(productFromDB.getImage());
+//		product.setProductId(productId);
+//		product.setCategory(productFromDB.getCategory());
+//
+//		double specialPrice = product.getProductPrice() - ((product.getDiscount() * 0.01) * product.getProductPrice());
+//		product.setSpecialPrice(specialPrice);
+//
+//		Product savedProduct = productRepo.save(product);
+//
+//		List<Cart> carts = cartRepo.findCartsByProductId(productId);
+//
+//		List<CartDTO> cartDTOs = carts.stream().map(cart -> {
+//			CartDTO cartDTO = modelMapper.map(cart, CartDTO.class);
+//
+//			List<ProductVariantDTO> productVariantDTOs = cart.getCartItems().stream()
+//					.map(p -> modelMapper.map(p.getProductVariant(), ProductVariantDTO.class)).collect(Collectors.toList());
+//
+//			cartDTO.setProductVariants(productVariantDTOs);
+//
+//			return cartDTO;
+//
+//		}).collect(Collectors.toList());
+//
+//		cartDTOs.forEach(cart -> cartService.updateProductInCarts(cart.getCartId(), productId));
+//
+//		return modelMapper.map(savedProduct, ProductDTO.class);
+//	}
+//
+//	@Override
+//	public ProductDTO updateProductImage(Long productId, MultipartFile image) throws IOException {
+//		Product productFromDB = productRepo.findById(productId)
+//				.orElseThrow(() -> new ResourceNotFoundException("Product", "productId", productId));
+//
+//		if (productFromDB == null) {
+//			throw new APIException("Product not found with productId: " + productId);
+//		}
+//
+//		String fileName = fileService.uploadImage(path, image);
+//
+//		productFromDB.setImage(fileName);
+//
+//		Product updatedProduct = productRepo.save(productFromDB);
+//
+//		return modelMapper.map(updatedProduct, ProductDTO.class);
+//	}
+//
+//	@Override
+//	public String deleteProduct(Long productId) {
+//
+//		Product product = productRepo.findById(productId)
+//				.orElseThrow(() -> new ResourceNotFoundException("Product", "productId", productId));
+//
+//		List<Cart> carts = cartRepo.findCartsByProductId(productId);
+//
+//		carts.forEach(cart -> cartService.deleteProductFromCart(cart.getCartId(), productId));
+//
+//		productRepo.delete(product);
+//
+//		return "Product with productId: " + productId + " deleted successfully !!!";
+//	}
 
 }
